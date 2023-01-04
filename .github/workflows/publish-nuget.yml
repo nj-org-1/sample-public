@@ -1,0 +1,31 @@
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  VERSION: "1.1.${{ github.run_number }}"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Create a .NET Core class library project
+        run: dotnet new classlib
+        
+      - name: Add NuGetPublish.cs
+        run: echo 'public class NuGetPublish { public static void SayHello() { System.Console.WriteLine("Hello from ${{ github.repository }}!"); } }' > NuGetPublish.cs
+
+      - name: Build package
+        run: dotnet pack -p:RepositoryUrl=https://github.com/${{ github.repository }} -p:PackageVersion=${{ env.VERSION }}
+
+      - name: Publish package
+        run: dotnet nuget push bin/Debug/*.nupkg --api-key ${{ secrets.WRITE_PACKAGES_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}
