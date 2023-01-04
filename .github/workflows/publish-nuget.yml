@@ -25,7 +25,7 @@ jobs:
         run: echo 'public class NuGetPublish { public static void SayHello() { System.Console.WriteLine("Hello from ${{ github.repository }}!"); } }' > NuGetPublish.cs
 
       - name: Build package
-        run: dotnet pack -p:RepositoryUrl=https://github.com/${{ github.repository }} -p:PackageVersion=${{ env.VERSION }}
+        run: nuget pack -p:RepositoryUrl=https://github.com/${{ github.repository }} -p:PackageVersion=${{ env.VERSION }}
 
       - name: Publish package
-        run: dotnet nuget push bin/Debug/*.nupkg --api-key ${{ secrets.WRITE_PACKAGES_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}
+        run: dotnet publish bin/Debug/*.nupkg --api-key ${{ secrets.WRITE_PACKAGES_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}
