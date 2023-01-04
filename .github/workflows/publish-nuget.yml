@@ -28,4 +28,4 @@ jobs:
         run: dotnet pack -p:RepositoryUrl=https://github.com/${{ github.repository }} -p:PackageVersion=${{ env.VERSION }}
 
       - name: Publish package
-        run: dotnet publish bin/Debug/*.nupkg --api-key ${{ secrets.WRITE_PACKAGES_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}
+        run: dotnet nuget push bin/Debug/*.nupkg --api-key ${{ secrets.WRITE_PACKAGES_TOKEN }} --source https://nuget.pkg.github.com/${{ github.repository_owner }}
